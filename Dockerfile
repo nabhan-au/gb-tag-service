@@ -2,6 +2,7 @@
 FROM golang:1.20-alpine as builder
 
 ARG PORT=3000
+ARG GRPCPORT=5002
 
 # Install ssh client and git
 RUN apk add --no-cache openssh-client git
@@ -35,6 +36,7 @@ FROM alpine:3.16.2
 WORKDIR /app
 COPY --from=builder /app/out/application application
 
-EXPOSE ${PORT}
+EXPOSE $PORT
+EXPOSE $GRPCPORT
 
 CMD [ "/app/application" ]
