@@ -2,6 +2,10 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"net"
+	"time"
+
 	"github.com/GarnBarn/common-go/database"
 	"github.com/GarnBarn/common-go/httpserver"
 	"github.com/GarnBarn/common-go/logger"
@@ -14,9 +18,6 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
-	"log"
-	"net"
-	"time"
 )
 
 var appConfig config.Config
@@ -72,19 +73,21 @@ func main() {
 	router.PATCH("/:tagId", tagHandler.UpdateTag)
 	router.DELETE("/:tagId", tagHandler.DeleteTag)
 
-	// GRPC
-	lis, err := net.Listen("tcp", fmt.Sprint(":", appConfig.GRPC_SERVER_PORT))
-	if err != nil {
-		log.Fatalf("failed to listen: %v", err)
-	}
+	go func() {
+		// GRPC
+		lis, err := net.Listen("tcp", fmt.Sprint(":", appConfig.GRPC_SERVER_PORT))
+		if err != nil {
+			log.Fatalf("failed to listen: %v", err)
+		}
 
-	s := grpc.NewServer()
-	proto.RegisterTagServer(s, grpcHandler)
+		s := grpc.NewServer()
+		proto.RegisterTagServer(s, grpcHandler)
 
-	log.Printf("server listening at %v", lis.Addr())
-	if err := s.Serve(lis); err != nil {
-		log.Fatalf("failed to serve: %v", err)
-	}
+		log.Printf("server listening at %v", lis.Addr())
+		if err := s.Serve(lis); err != nil {
+			log.Fatalf("failed to serve: %v", err)
+		}
+	}()
 
 	logrus.Info("Listening and serving HTTP on :", appConfig.HTTP_SERVER_PORT)
 	httpServer.Run(fmt.Sprint(":", appConfig.HTTP_SERVER_PORT))
