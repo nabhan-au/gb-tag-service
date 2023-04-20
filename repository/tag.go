@@ -7,10 +7,8 @@ import (
 
 type Tag interface {
 	GetAllTag(author string) (tags []model.Tag, err error)
-	Create(tag *model.Tag) error
 	Update(tag *model.Tag) error
 	GetByID(id int) (*model.Tag, error)
-	DeleteTag(tagID int) error
 }
 
 type tag struct {
@@ -40,16 +38,7 @@ func (t *tag) GetByID(id int) (*model.Tag, error) {
 	return &tag, result.Error
 }
 
-func (t *tag) Create(tag *model.Tag) error {
-	result := t.db.Create(tag)
-	return result.Error
-}
-
 func (t *tag) Update(tag *model.Tag) error {
 	result := t.db.Save(tag)
-	return result.Error
-}
-func (t *tag) DeleteTag(tagID int) error {
-	result := t.db.Delete(&model.Tag{}, tagID)
 	return result.Error
 }

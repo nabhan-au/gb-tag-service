@@ -1,15 +1,20 @@
 package service
 
 import (
+	"encoding/json"
 	globalmodel "github.com/GarnBarn/common-go/model"
+	"github.com/GarnBarn/gb-tag-service/config"
 	"github.com/GarnBarn/gb-tag-service/model"
 	"github.com/GarnBarn/gb-tag-service/repository"
 	"github.com/pquerna/otp/totp"
 	"github.com/sirupsen/logrus"
+	"github.com/wagslane/go-rabbitmq"
 )
 
 type tag struct {
 	tagRepository repository.Tag
+	publisher     *rabbitmq.Publisher
+	appConfig     config.Config
 }
 
 type Tag interface {
@@ -21,9 +26,11 @@ type Tag interface {
 	IsTagExist(tagId int) bool
 }
 
-func NewTagService(tagRepository repository.Tag) Tag {
+func NewTagService(tagRepository repository.Tag, publisher *rabbitmq.Publisher, appConfig config.Config) Tag {
 	return &tag{
 		tagRepository: tagRepository,
+		publisher:     publisher,
+		appConfig:     appConfig,
 	}
 }
 
@@ -44,7 +51,12 @@ func (t *tag) CreateTag(tag *globalmodel.Tag) error {
 
 	tag.SecretKeyTotp = totpPrivateKey
 
-	return t.tagRepository.Create(tag)
+	tagByte, err := json.Marshal(tag)
+	if err != nil {
+		logrus.Error(err)
+		return err
+	}
+	return t.publisher.Publish(tagByte, []string{"create"}, rabbitmq.WithPublishOptionsExchange(t.appConfig.RABBITMQ_TAG_EXCHANGE))
 }
 
 func (t *tag) UpdateTag(tagId int, tagUpdateRequest *model.UpdateTagRequest) (*globalmodel.Tag, error) {
@@ -76,8 +88,12 @@ func (t *tag) GetTagById(tagId int, maskSecretKey bool) (model.TagPublic, error)
 func (t *tag) DeleteTag(tagId int) error {
 	logrus.Info("Check delete tag")
 	defer logrus.Info("Complete delete tag")
-	err := t.tagRepository.DeleteTag(tagId)
-	return err
+	tagRequestByte, err := json.Marshal(globalmodel.TagDeleteRequest{ID: tagId})
+	if err != nil {
+		logrus.Error(err)
+		return err
+	}
+	return t.publisher.Publish(tagRequestByte, []string{"delete"}, rabbitmq.WithPublishOptionsExchange(t.appConfig.RABBITMQ_TAG_EXCHANGE))
 }
 
 func (t *tag) IsTagExist(tagId int) bool {

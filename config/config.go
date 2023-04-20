@@ -14,6 +14,8 @@ type Config struct {
 	MYSQL_CONNECTION_STRING string `envconfig:"MYSQL_CONNECTION_STRING"`
 	FIREBASE_CONFIG_FILE    string `envconfig:"FIREBASE_CONFIG_FILE" default:"firebase-credential.json"`
 	GRPC_SERVER_PORT        string `envconfig:"GRPC_SERVER_PORT" default:"5002"`
+	RABBITMQ_CONNECTION     string `envconfig:"RABBITMQ_CONNECTION" default:"amqp://guest:guest@localhost:5672"`
+	RABBITMQ_TAG_EXCHANGE   string `envconfig:"RABBITMQ_TAG_EXCHANGE" default:"tag"`
 }
 
 func Load() Config {
