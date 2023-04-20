@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/wagslane/go-rabbitmq"
 	"log"
 	"net"
 	"time"
@@ -37,6 +38,26 @@ func main() {
 		logrus.Panic("Can't connect to db: ", err)
 	}
 
+	// Connect RabbitMQ
+	conn, err := rabbitmq.NewConn(
+		appConfig.RABBITMQ_CONNECTION,
+		rabbitmq.WithConnectionOptionsLogging,
+	)
+	if err != nil {
+		logrus.Fatal(err)
+	}
+	defer conn.Close()
+
+	publisher, err := rabbitmq.NewPublisher(
+		conn,
+		rabbitmq.WithPublisherOptionsLogging,
+		rabbitmq.WithPublisherOptionsExchangeName(appConfig.RABBITMQ_TAG_EXCHANGE),
+	)
+	if err != nil {
+		logrus.Fatal(err)
+	}
+	defer publisher.Close()
+
 	// Create the required dependentices
 	validate := validator.New()
 
@@ -44,7 +65,7 @@ func main() {
 	tagRepository := repository.NewTagRepository(db)
 
 	// Create the services
-	tagService := service.NewTagService(tagRepository)
+	tagService := service.NewTagService(tagRepository, publisher, appConfig)
 
 	// Init the handler
 	tagHandler := handler.NewTagHandler(*validate, tagService)
