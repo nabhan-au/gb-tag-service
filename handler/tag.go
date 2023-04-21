@@ -32,7 +32,7 @@ func NewTagHandler(validate validator.Validate, tagService service.Tag) Tag {
 
 func (t *Tag) GetAllTag(c *gin.Context) {
 
-	uid := c.Param(httpserver.UserUidKey)
+	uid := c.GetHeader(httpserver.UserUidKey)
 
 	tags, err := t.tagService.GetAllTag(uid)
 
