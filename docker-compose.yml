@@ -15,3 +15,5 @@ services:
       - 8080:80
     links:
       - tag-db
+    environment:
+      - PMA_HOST=tag-db
