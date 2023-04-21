@@ -73,6 +73,7 @@ func main() {
 
 	// Create the http server
 	httpServer := httpserver.NewHttpServer()
+	httpServer.Use(httpserver.AuthModelMapping())
 
 	httpServer.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"*"},
