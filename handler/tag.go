@@ -2,11 +2,12 @@ package handler
 
 import (
 	"errors"
+	"net/http"
+	"strconv"
+
 	"github.com/GarnBarn/common-go/httpserver"
 	"github.com/GarnBarn/gb-tag-service/model"
 	"github.com/GarnBarn/gb-tag-service/service"
-	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
@@ -73,7 +74,7 @@ func (t *Tag) CreateTag(c *gin.Context) {
 		return
 	}
 
-	tag := tagRequest.ToTag(c.Param(httpserver.UserUidKey))
+	tag := tagRequest.ToTag(c.GetHeader(httpserver.UserUidKey))
 
 	err = t.tagService.CreateTag(&tag)
 	if err != nil {
