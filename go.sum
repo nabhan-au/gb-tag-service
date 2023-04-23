@@ -1,5 +1,5 @@
-github.com/GarnBarn/common-go v0.6.6 h1:Fc8T4s9sPezYuuIjNPY6mnYV+akOvJJSkgRQWJeA+9c=
-github.com/GarnBarn/common-go v0.6.6/go.mod h1:hhwpJzBFbcLftwKdO3UiyHy3wxOschlYVOkXcqEcggE=
+github.com/GarnBarn/common-go v0.6.7 h1:Bk1ZJUxRfVNpYS2wCC8obKOl7lu8pyC7eKI3CiRpcDs=
+github.com/GarnBarn/common-go v0.6.7/go.mod h1:hhwpJzBFbcLftwKdO3UiyHy3wxOschlYVOkXcqEcggE=
 github.com/boombuler/barcode v1.0.1-0.20190219062509-6c824513bacc h1:biVzkmvwrH8WK8raXaxBx6fRVTlJILwEwQGL1I/ByEI=
 github.com/boombuler/barcode v1.0.1-0.20190219062509-6c824513bacc/go.mod h1:paBWMcWSl3LHKBqUq+rly7CNSldXjb2rDl3JlRe0mD8=
 github.com/bytedance/sonic v1.5.0/go.mod h1:ED5hyg4y6t3/9Ku1R6dU/4KyJ48DZ4jPhfY1O2AihPM=
