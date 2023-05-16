@@ -17,3 +17,19 @@ services:
       - tag-db
     environment:
       - PMA_HOST=tag-db
+
+  rabbit:
+    image: rabbitmq:management-alpine
+    ports:
+      - 15672:15672
+      - 5672:5672
+    volumes:
+      - type: bind
+        source: ./rabbitmq/rabbitmq.config
+        target: /etc/rabbitmq/rabbitmq.config
+      - type: bind
+        source: ./rabbitmq/rabbitmq-definitions.json
+        target: /etc/rabbitmq/rabbitmq-definitions.json
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest

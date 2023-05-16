@@ -1,0 +1,103 @@
+{
+  "exchanges": [
+    {
+      "name": "tag",
+      "vhost": "/",
+      "type": "direct",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "tag.fail",
+      "vhost": "/",
+      "type": "direct",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    }
+  ],
+  "queues": [
+    {
+      "name": "tag.create.update",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
+      "name": "tag.fail.create.update",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
+      "name": "tag.delete.update",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
+      "name": "tag.fail.delete.update",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    }
+  ],
+  "bindings": [
+    {
+      "source": "tag",
+      "vhost": "/",
+      "destination": "tag.create.update",
+      "destination_type": "queue",
+      "routing_key": "create",
+      "arguments": {}
+    },
+    {
+      "source": "tag",
+      "vhost": "/",
+      "destination": "tag.delete.update",
+      "destination_type": "queue",
+      "routing_key": "delete",
+      "arguments": {}
+    },
+    {
+      "source": "tag.fail",
+      "vhost": "/",
+      "destination": "tag.fail.create.update",
+      "destination_type": "queue",
+      "routing_key": "create",
+      "arguments": {}
+    },
+    {
+      "source": "tag.fail",
+      "vhost": "/",
+      "destination": "tag.fail.delete.update",
+      "destination_type": "queue",
+      "routing_key": "delete",
+      "arguments": {}
+    }
+  ],
+  "vhosts": [{ "name": "/" }],
+  "users": [
+    {
+      "name": "guest",
+      "password": "guest",
+      "tags": "administrator"
+    }
+  ],
+  "permissions": [
+    {
+      "user": "guest",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    }
+  ]
+}
