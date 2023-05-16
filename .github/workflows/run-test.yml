@@ -1,0 +1,25 @@
+name: Run Test
+on: [push]
+jobs:
+  run-unit-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-go@v3
+        with:
+          go-version: "^1.20"
+
+      - name: Install Test Dependency
+        shell: bash
+        run: |
+          go get github.com/onsi/ginkgo/v2/ginkgo/generators@v2.3.1
+          go get github.com/onsi/ginkgo/v2/ginkgo/internal@v2.3.1
+          go get github.com/onsi/ginkgo/v2/ginkgo/labels@v2.3.1
+          go install github.com/onsi/ginkgo/v2/ginkgo@v2.5.0
+          go get github.com/onsi/gomega/...
+
+      - name: Install Program Dependency
+        shell: bash
+        run: |
+          go mod tidy
